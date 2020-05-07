@@ -32,7 +32,7 @@ class publishChangelog(object):
 		portno = config.get('MDS', 'ZMQ_Publisher_Port')
                 #publisher.bind("tcp://*:5557")
 		publisher.bind("tcp://*:%s"%portno)
-                time.sleep(5)
+                time.sleep(1)
 		global fsname
 		fsname = config.get('MDS', 'FS_Name')
 		rank = config.get('MDS', 'Rank')
@@ -54,8 +54,10 @@ class publishChangelog(object):
 				if line.startswith('0x'):
 					if event != "":
 						if "NOOP" not in event:
-							event_id = self.on_any_event(event) 
-							#print ('new'+event)
+							event_id1 = self.on_any_event(event) 
+							#print ('new'+event+'\n'+event_id)
+							if event_id1.startswith('0x'):
+								event_id = event_id1
 						event = ""
 				event = event + line
 			#subprocess.check_output(["cephfs-journal-tool", "event", "splice", "list"])
@@ -91,12 +93,14 @@ class publishChangelog(object):
 		for f in files:
 			if "stray" in f:
 				continue
+			if f.startswith('.'):
+				continue
 			etype = event_type + event_subtype
 			f = "/mnt/" + fsname + "/" + f
 			fsplit = f.rsplit('/', 1)
 			path = fsplit[0]
 			filename = fsplit[1]
-			message =  "%s,%s,%s,%s,%s" % (timestamp, datestamp, path, etype, filename)
+			message =  "%s,%s,%s,%s,%s" % (timestamp, datestamp, f, etype, filename)
 			#print(message)
                 	publisher.send(message)
 			#call = "cephfs-journal-tool event splice --range=.."+event_id+" list"
