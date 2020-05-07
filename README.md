@@ -2,7 +2,8 @@ Author: Arnab K. Paul
 
 # FSMonitor
 
-Requirements: 
+Requirements:
+ 
 	Python 2.7
 	ZeroMQ for python (pip install pyzmq)
 	MySQL
@@ -12,7 +13,9 @@ Lustre Client/Ceph Client/Local File System:
 	
 	On Lustre and Ceph, this module needs to go in the Lustre clients. 
 	
-	Edit config_client.ini. Have Type as either 'Lustre' or 'Ceph' or 'Linux' or 'MAC'. Set the path to monitor in the Notify_Path.
+	Edit config_client.ini. 
+		Have Type as either 'Lustre' or 'Ceph' or 'Linux' or 'MAC'. 
+		Set the path to monitor in the Notify_Path.
 	$ python subscribeChangelog.py
 
 	If client had failed and needs past events, set the 'config_faulttolerance_client.ini' file. 
