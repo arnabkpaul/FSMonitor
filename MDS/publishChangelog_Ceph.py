@@ -37,17 +37,24 @@ class publishChangelog(object):
 		fsname = config.get('MDS', 'FS_Name')
 		rank = config.get('MDS', 'Rank')
 		#print('Starting')
+		event_id = 0
                 while True:
                         # cephfs-journal-tool --rank=mycephfs:0 event get list
 			#arg2 = '--rank='+fsname+':'+rank
-                        events = subprocess.check_output(["cephfs-journal-tool", "event", "get", "list"])
+			call = "cephfs-journal-tool event get --range=" + str(event_id) + ".. list"
+                        #print(call)
+			events = subprocess.check_output(call, shell = True)
 			#print(events)
 			event = ""
+			c = 0
                         for line in events.split('\n'):
+				if (c == 0 and event_id != 0):
+					c = 1
+					continue
 				if line.startswith('0x'):
 					if event != "":
 						if "NOOP" not in event:
-							self.on_any_event(event) 
+							event_id = self.on_any_event(event) 
 							#print ('new'+event)
 						event = ""
 				event = event + line
@@ -77,8 +84,10 @@ class publishChangelog(object):
 		timestamp = datetime.now().time()
 		datestamp = date.today()
 		if 'stray' in event_subtype:
-			return None
+			return event_id
 		files = file_names.split(" ")
+		if file_names == "":
+			return event_id
 		for f in files:
 			if "stray" in f:
 				continue
@@ -88,14 +97,14 @@ class publishChangelog(object):
 			path = fsplit[0]
 			filename = fsplit[1]
 			message =  "%s,%s,%s,%s,%s" % (timestamp, datestamp, path, etype, filename)
-			print(message)
+			#print(message)
                 	publisher.send(message)
 			#call = "cephfs-journal-tool event splice --range=.."+event_id+" list"
 			#subprocess.call(call, shell = True)
-                return None
+                return event_id
 	
 	except (IndexError):
-		return None
+		return event_id
 
 
         except (KeyboardInterrupt, SystemExit):
