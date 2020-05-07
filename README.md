@@ -2,7 +2,11 @@ Author: Arnab K. Paul
 
 # FSMonitor
 
-Requirements: Python 2.7, ZeroMQ for python (pip install pyzmq), MySQL, Watchdog for local file system (pip install watchdog)
+Requirements: 
+	Python 2.7
+	ZeroMQ for python (pip install pyzmq)
+	MySQL
+	Watchdog for local file system (pip install watchdog)
 
 Lustre Client/Ceph Client/Local File System: 
 	
@@ -66,6 +70,7 @@ NOTE:
 		$ sudo systemctl stop firewalld
 
 Order of running the modules:
+
 	For Event Collection on Local File Systems:
 		Client -> $ python subscribeChangelog.py
 
