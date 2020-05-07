@@ -55,12 +55,12 @@ class subscribeChangelog(object):
                                 if msg:
                                         #f = open(destfile, 'a+')
                                         #print 'open'
-                                        print(msg)
+                                        #print(msg)
                                         #f.write(msg)
                                         #print 'close\n'
                                         #f.close()
                                         #print('Sending Message to Subscribers')
-                                        #publisher.send(msg)
+                                        publisher.send(msg)
                                         self.queue.put(msg)
                                         #print('Sent msg to queue')
 			else:
@@ -69,12 +69,12 @@ class subscribeChangelog(object):
     					if msg:
         					#f = open(destfile, 'a+')
         					#print 'open'
-						print(msg)
+						#print(msg)
         					#f.write(msg)
         					#print 'close\n'
         					#f.close()
 						#print('Sending Message to Subscribers')
-						#publisher.send(msg)
+						publisher.send(msg)
 						self.queue.put(msg)
 						#print('Sent msg to queue')	
 
