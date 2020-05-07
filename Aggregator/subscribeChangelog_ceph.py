@@ -29,14 +29,15 @@ class subscribeChangelog(object):
 		context = zmq.Context()
 		subscriber = context.socket(zmq.SUB)
 		publisher = context.socket(zmq.PUB)
-		mds_count = config.get('MGS', 'MDS_Count')
-		mds_ip = config.get('MGS', 'MDS_IP').split(",")
-		mds_port = config.get('MGS', 'MDS_Port').split(",")
+		mds_count = config.get('MON', 'MDS_Count')
+		mds_ip = config.get('MON', 'MDS_IP').split(",")
+		mds_port = config.get('MON', 'MDS_Port').split(",")
 		#subscriber.connect("tcp://10.0.7.96:5557")
-		for mds in range(int(mds_count)):
-			subscriber.connect("tcp://%s:%s"%(mds_ip[mds],mds_port[mds]))
+		#for mds in range(int(mds_count)):
+			#subscriber.connect("tcp://%s:%s"%(mds_ip[mds],mds_port[mds]))
+		subscriber.connect("tcp://192.168.0.192:5557")
 		subscriber.setsockopt(zmq.SUBSCRIBE,'')
-		portno = config.get('MGS', 'ZMQ_Publisher_Port')
+		portno = config.get('MON', 'ZMQ_Publisher_Port')
 		publisher.bind("tcp://*:%s"%portno)
 		time.sleep(5)
 
@@ -54,12 +55,12 @@ class subscribeChangelog(object):
                                 if msg:
                                         #f = open(destfile, 'a+')
                                         #print 'open'
-                                        #print(msg)
+                                        print(msg)
                                         #f.write(msg)
                                         #print 'close\n'
                                         #f.close()
                                         #print('Sending Message to Subscribers')
-                                        publisher.send(msg)
+                                        #publisher.send(msg)
                                         self.queue.put(msg)
                                         #print('Sent msg to queue')
 			else:
@@ -68,12 +69,12 @@ class subscribeChangelog(object):
     					if msg:
         					#f = open(destfile, 'a+')
         					#print 'open'
-						#print(msg)
+						print(msg)
         					#f.write(msg)
         					#print 'close\n'
         					#f.close()
 						#print('Sending Message to Subscribers')
-						publisher.send(msg)
+						#publisher.send(msg)
 						self.queue.put(msg)
 						#print('Sent msg to queue')	
 
@@ -104,11 +105,11 @@ class subscribeChangelog(object):
 if __name__ == '__main__':
 	global config
         config = ConfigParser.ConfigParser()
-        config.read('config_mgs.ini')
+        config.read('config_mon_ceph.ini')
 	#signal.signal(signal.SIGINT, subscribeChangelog().signal_handler)
         #signal.signal(signal.SIGTSTP, subscribeChangelog().signal_handler)
         #signal.signal(signal.SIGQUIT, subscribeChangelog().signal_handler)
         #signal.signal(signal.SIGTERM, subscribeChangelog().signal_handler)
-	logging.basicConfig(filename='log_MGS.log', level=logging.INFO, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%a, %d %b %Y %H:%M:%S', filemode ='w', maxBytes=5*1024*1024)
+	#logging.basicConfig(filename='log_MGS.log', level=logging.INFO, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%a, %d %b %Y %H:%M:%S', filemode ='w', maxBytes=5*1024*1024)
         #print = logging.info
 	subscribeChangelog().monitor()
