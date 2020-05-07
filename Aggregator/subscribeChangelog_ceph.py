@@ -33,9 +33,9 @@ class subscribeChangelog(object):
 		mds_ip = config.get('MON', 'MDS_IP').split(",")
 		mds_port = config.get('MON', 'MDS_Port').split(",")
 		#subscriber.connect("tcp://10.0.7.96:5557")
-		#for mds in range(int(mds_count)):
-			#subscriber.connect("tcp://%s:%s"%(mds_ip[mds],mds_port[mds]))
-		subscriber.connect("tcp://192.168.0.192:5557")
+		for mds in range(int(mds_count)):
+			subscriber.connect("tcp://%s:%s"%(mds_ip[mds],mds_port[mds]))
+		#subscriber.connect("tcp://192.168.0.192:5557")
 		subscriber.setsockopt(zmq.SUBSCRIBE,'')
 		portno = config.get('MON', 'ZMQ_Publisher_Port')
 		publisher.bind("tcp://*:%s"%portno)
