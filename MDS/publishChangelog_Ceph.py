@@ -51,7 +51,7 @@ class publishChangelog(object):
 							#print ('new'+event)
 						event = ""
 				event = event + line
-			events = subprocess.check_output(["cephfs-journal-tool", "event", "splice", "list"])
+			#subprocess.check_output(["cephfs-journal-tool", "event", "splice", "list"])
 
         except (KeyboardInterrupt, SystemExit):
                 publisher.close()
@@ -84,9 +84,14 @@ class publishChangelog(object):
 				continue
 			etype = event_type + event_subtype
 			f = "/mnt/" + fsname + "/" + f
-			message =  "%s,%s,%s,%s,%s" % (timestamp, datestamp, event_id, etype, f)
+			fsplit = f.rsplit('/', 1)
+			path = fsplit[0]
+			filename = fsplit[1]
+			message =  "%s,%s,%s,%s,%s" % (timestamp, datestamp, path, etype, filename)
 			print(message)
-                	#publisher.send(message)
+                	publisher.send(message)
+			#call = "cephfs-journal-tool event splice --range=.."+event_id+" list"
+			#subprocess.call(call, shell = True)
                 return None
 	
 	except (IndexError):
